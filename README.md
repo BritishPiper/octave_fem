@@ -27,7 +27,7 @@ The first column of the matrices of the boundary conditions is the number of the
 ## Output Files
 
 ```
-output    = "Output/output.pos;
+output    = "Output/output.pos";
 results   = "Output/results.txt";
 ```
 
@@ -42,6 +42,54 @@ function k = conductivity(element)
     k = k_object;
   else # Inside of the domain, outside of the object
     k = k_domain;
-  dndif
+  endif
 endfunction
+```
+
+## Approximate Points
+
+Sometimes you want to find the closest approximated points in the mesh to a given set of real points. The script "approximate_points.m" was created for that purpose. For example, if we wanted to find the central points of the faces of a 0.3 x 0.3 x 0.3 cube which is centered at the origin, one would modify the script to:
+
+```
+mesh = "Meshes/mesh.msh";
+
+points = [
+  +0.15, 0, 0;
+  -0.15, 0, 0;
+  0, +0.15, 0;
+  0, -0.15, 0;
+  0, 0, +0.15;
+  0, 0, -0.15;
+];
+```
+
+The output of the closest nodes to the real points is done in the Octave console:
+
+```
+́Node |        Coordinates           |      Approximated Point      | Distance
+ 364 | +0.15000, +0.00000, +0.00000 | +0.15000, +0.00000, +0.00000 | 0.000000
+ 239 | -0.15000, +0.00000, +0.00000 | -0.15000, +0.00000, +0.00000 | 0.000000
+ 314 | +0.00000, +0.15000, +0.00000 | +0.00000, +0.15000, +0.00000 | 0.000000
+ 264 | +0.00000, -0.15000, +0.00000 | +0.00000, -0.15000, +0.00000 | 0.000000
+ 289 | +0.00000, +0.00000, +0.15000 | +0.00000, +0.00000, +0.15000 | 0.000000
+ 339 | +0.00000, +0.00000, -0.15000 | +0.00000, +0.00000, -0.15000 | 0.000000
+ ```
+
+The approximated points (Nodes 364, 239, 314, 264, 289 and 339) are the same as the real points in this example, yielding a distance of 0.0. This happens because the mesh contains the real points.
+
+## Parallelism
+
+The code is not optimal at all. The implementation of basic parallelism when calculating the local matrices was done to try and improve its usability. The commands "pkg install -forge parallel" and "pkg install -forge struct" must be executed in Octave for this to work. Parallelization can be enabled by commenting/uncommenting the lines:
+
+```
+# Parallel computation (faster, but requires pkg parallel)
+global K_local;
+par_local_matrices(coordinates, topology, @conductivity);
+
+printf("\nLocal matrices computed with parallelism in %f seconds\n", toc(start)); start = tic;
+
+# Serial computation
+# K_local = local_matrices(coordinates, topology, @conductivity);
+
+# printf("\nLocal matrices computed in %f seconds\n", toc(start)); start = tic;
 ```
