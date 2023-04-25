@@ -2,7 +2,7 @@
 An implementation of the Finite Element Method for the solution of the Generalized Poisson Equation using Octave. This was done as the final exercise for the course "PME3534 - Técnicas Experimentais e Computacionais em Biomecânica e Sistemas Vasculares" at USP (University of São Paulo). All the code is open source, published under the GNU license.
 
 LaTEX equation being solved:
-$\Delta \cdot (\epsilon\ \Delta V) = -\frac{\rho}{\epsilon_0}}$
+$\Delta \cdot (\epsilon\ \Delta V) = -\frac{\rho}{\epsilon_0}$
 
 ## Usage
 The main script to be executed is "fem.m", which should be modified as desired. Examples for the mesh and for the generated output can be found at the folders "Meshes" and "Output". ".geo", ".msh" and ".pos" files should be opened using GMSH.
